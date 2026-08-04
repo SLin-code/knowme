@@ -146,7 +146,7 @@ Auto-detected (do not pass these):
 
 ```bash
 knowme query --days 7                     # last week
-knowme query --project WorkMe --limit 20  # last 20 records in WorkMe
+knowme query --project my-app --limit 20  # last 20 records in one project
 knowme query --grep "sitemap" -v          # full-text search with details
 knowme query --agent codex --days 30      # only Codex activity, 30d
 knowme query --json --days 1 | jq .       # machine-readable
@@ -182,8 +182,8 @@ A record looks like:
   "outcome": "SSR route works end-to-end in staging",
   "decisions": ["keep v1 HTML upload as fallback"],
   "env": {
-    "cwd": "/Users/you/dev/mars-web",
-    "project": "mars-web",
+    "cwd": "/Users/you/dev/my-app",
+    "project": "my-app",
     "git_branch": "feature/pseo-ssr",
     "git_head": "a1b2c3d4e5f6",
     "agent": "claude-code",

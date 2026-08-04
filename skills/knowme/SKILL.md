@@ -78,7 +78,7 @@ command -v knowme >/dev/null && knowme record ... || true
 ## Contract with the user
 
 - All records go to `~/.knowme/inbox/YYYY-MM-DD/records.jsonl` on the user's machine.
-- Data never leaves the machine unless the user explicitly pipes it somewhere (WorkMe adapter, dashboard, etc.).
+- Data never leaves the machine unless the user explicitly pipes it somewhere (a dashboard, a memory system, etc.).
 - Records are append-only; you cannot edit or delete past records via this CLI.
 
 ## Examples

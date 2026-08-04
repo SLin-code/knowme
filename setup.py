@@ -13,7 +13,8 @@ setup(
     description="Cross-agent activity trace — record what any AI agent just did.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    author="linxun",
+    author="SLin-code",
+    url="https://github.com/SLin-code/knowme",
     python_requires=">=3.10",
     packages=find_packages(exclude=["tests", "tests.*"]),
     entry_points={
