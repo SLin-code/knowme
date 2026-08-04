@@ -32,11 +32,14 @@ def build_record(
     files: list[str] | None = None,
     notes: str | None = None,
     kind: str = "task",
+    agent: str | None = None,
+    session: str | None = None,
     extra: dict[str, Any] | None = None,
 ) -> dict:
     """Compose a record from user-provided fields + auto-detected environment.
 
     Fields set to None are omitted from the record (keeps JSONL tidy).
+    `agent`/`session` override env-var detection — agents self-declare who they are.
     """
     rec: dict[str, Any] = {"kind": kind, "intent": intent}
     if outcome:
@@ -57,7 +60,7 @@ def build_record(
         rec["extra"] = extra
     # Auto-detected fields go into an "env" sub-object so user data and system data
     # are cleanly separated in the record.
-    rec["env"] = env.snapshot()
+    rec["env"] = env.snapshot(agent=agent, session=session)
     return rec
 
 

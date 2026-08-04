@@ -73,42 +73,46 @@ def detect_git_head(cwd: str | Path | None = None) -> str | None:
 
 
 def detect_agent() -> str | None:
-    """Which agent invoked us? Env vars are the reliable channel — parent-process
-    inspection is fragile across platforms and shells."""
-    # Common env markers, in order of preference (most specific first)
-    markers = [
-        ("KNOWME_AGENT", None),           # explicit override wins
-        ("CLAUDECODE", "claude-code"),
-        ("CURSOR_TRACE_ID", "cursor"),
-        ("CURSOR_AGENT", "cursor"),
-        ("CODEX_SESSION_ID", "codex"),
-        ("TERM_PROGRAM", None),           # e.g. "vscode" — weak signal, use last
-    ]
-    for var, label in markers:
-        v = os.environ.get(var)
-        if v:
-            return label or v.lower()
-    return None
+    """Which agent invoked us?
+
+    Design principle: agents self-declare who they are.
+
+    KnowMe does NOT hardcode an env-var-to-agent-name mapping — that approach forces
+    a KnowMe release for every new agent. Instead:
+
+      1. Preferred: agents pass `--agent <name>` to the CLI (handled at CLI layer).
+      2. Fallback: agents set `KNOWME_AGENT=<name>` in their shell before invoking.
+      3. Unknown: return None. Downstream can filter by absence.
+
+    Any agent — existing or future — can integrate without KnowMe knowing about it.
+    """
+    v = os.environ.get("KNOWME_AGENT")
+    return v.lower() if v else None
 
 
 def detect_session() -> str | None:
-    """Session id if the agent exposes one. Useful for stitching multiple records
-    from the same conversation together."""
-    for var in ("KNOWME_SESSION", "CLAUDE_SESSION_ID", "CODEX_SESSION_ID", "CURSOR_TRACE_ID"):
-        v = os.environ.get(var)
-        if v:
-            return v
-    return None
+    """Session id if the agent exposes one. Only reads KNOWME_SESSION —
+    same self-declaration principle as detect_agent()."""
+    v = os.environ.get("KNOWME_SESSION")
+    return v if v else None
 
 
-def snapshot(cwd: str | Path | None = None) -> dict:
-    """Bundle everything into a dict ready to merge into a record."""
+def snapshot(
+    cwd: str | Path | None = None,
+    agent: str | None = None,
+    session: str | None = None,
+) -> dict:
+    """Bundle detected environment into a dict ready to merge into a record.
+
+    Explicit `agent`/`session` (from CLI flags) win over env-var detection —
+    self-declaration is the reliable channel; env-var is the fallback.
+    """
     cwd = str(cwd or detect_cwd())
     return {
         "cwd": cwd,
         "project": detect_project(cwd),
         "git_branch": detect_git_branch(cwd),
         "git_head": detect_git_head(cwd),
-        "agent": detect_agent(),
-        "session": detect_session(),
+        "agent": agent or detect_agent(),
+        "session": session or detect_session(),
     }

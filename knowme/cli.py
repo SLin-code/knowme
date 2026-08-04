@@ -71,6 +71,8 @@ def cmd_record(args: argparse.Namespace, cfg: dict) -> int:
         files=_split_csv(args.files),
         notes=args.notes,
         kind=args.kind,
+        agent=args.agent,
+        session=args.session,
     )
     if args.quiet:
         return 0
@@ -252,6 +254,8 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument("--files", help="Files touched, comma-separated")
     pr.add_argument("--notes", help="Free-text notes")
     pr.add_argument("--kind", default="task", help="Record kind (default: task)")
+    pr.add_argument("--agent", help="Agent name (self-declared; overrides KNOWME_AGENT env)")
+    pr.add_argument("--session", help="Session id (self-declared; overrides KNOWME_SESSION env)")
     pr.add_argument("--json", action="store_true", help="Print result as JSON")
     pr.add_argument("--quiet", "-q", action="store_true", help="Suppress output")
     pr.set_defaults(func=cmd_record)

@@ -22,18 +22,24 @@ Do **not** invoke for:
 
 ## How
 
-Call the `knowme` CLI (installed on the user's PATH). Minimum required:
+Call the `knowme` CLI (installed on the user's PATH). Minimum required + self-declare who you are:
 
 ```bash
 knowme record \
+  --agent "your-agent-name" \
   --intent "one line: what you set out to do" \
   --outcome "one line: what actually happened"
 ```
+
+**`--agent` is your self-declared name** (e.g. `claude-code`, `codex`, `cursor`, `catpaw`, or whatever
+identifies you). KnowMe doesn't guess — every agent identifies itself so records can be filtered by
+source later. If you're not sure what to call yourself, use your product name in lowercase-kebab-case.
 
 Add decisions when relevant (they compound into the user's long-term memory):
 
 ```bash
 knowme record \
+  --agent "claude-code" \
   --intent "wire up the pSEO SSR pipeline" \
   --outcome "SSR route works end-to-end in staging" \
   --decisions "keep v1 HTML upload as fallback, don't drop it"
@@ -49,7 +55,6 @@ Comma-separates multiple decisions:
 
 KnowMe auto-detects the following — **you do NOT need to pass them**:
 
-- **agent** — which coding tool you are (from env vars)
 - **project** — the current project (from `git remote` or cwd)
 - **git branch / head** — where the work sits
 - **cwd** — where the CLI was invoked
@@ -83,9 +88,12 @@ command -v knowme >/dev/null && knowme record ... || true
 
 ## Examples
 
+Every example includes `--agent` — substitute your own name.
+
 **A refactor decision**
 ```bash
 knowme record \
+  --agent claude-code \
   --intent "refactor the auth module for testability" \
   --outcome "split into 3 files, all tests still green" \
   --decisions "extract token verifier as pure fn, keep session store injectable" \
@@ -95,6 +103,7 @@ knowme record \
 **A debugging session**
 ```bash
 knowme record \
+  --agent codex \
   --kind debug \
   --intent "figure out why sitemap.xml returns 404 in prod" \
   --outcome "platform whitelist excludes .xml, switched to sitemap.txt format" \
@@ -104,6 +113,7 @@ knowme record \
 **A design decision (no code yet)**
 ```bash
 knowme record \
+  --agent cursor \
   --kind decision \
   --intent "pick storage format for KnowMe inbox" \
   --outcome "chose JSONL over SQLite" \
