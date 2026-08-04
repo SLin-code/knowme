@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""KnowMe CLI entry-point.
+
+Kept as a thin shim so we can install it via pip's console_scripts later
+without changing the file layout.
+"""
+import sys
+from pathlib import Path
+
+# When run from the source repo (not installed), make `knowme` importable.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from knowme.cli import main  # noqa: E402
+
+if __name__ == "__main__":
+    raise SystemExit(main())
